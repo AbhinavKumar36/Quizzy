@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Teacher Dashboard | Quizzy{% endblock %}
+
+{% block content %}
+<div class="teacher-header fade-in-up">
+    <h1>Teacher Dashboard</h1>
+    <p>Manage your quizzes and track student performance.</p>
+</div>
+
+<div class="teacher-actions fade-in-up delay-1" style="gap: 1rem;">
+    <a href="{{ url_for('teacher_register_student') }}" class="btn btn-secondary">Register Student</a>
+    <a href="{{ url_for('teacher_create_quiz') }}" class="btn btn-accent">+ Create New Quiz</a>
+</div>
+
+<div class="quiz-grid teacher-grid mt-2">
+    {% for quiz in quizzes %}
+    <div class="quiz-card teacher-card fade-in-up delay-2">
+        <div class="card-content">
+            <h2>{{ quiz.title }}</h2>
+            <p>{{ quiz.description }}</p>
+            <div class="meta-info">
+                <span class="badge">{{ quiz.questions|length }} Questions</span>
+                <span class="badge badge-secondary">{{ quiz.scores|length }} Attempts</span>
+            </div>
+        </div>
+        <div class="card-actions">
+            <a href="{{ url_for('teacher_add_question', quiz_id=quiz.id) }}" class="btn btn-primary btn-sm">Manage Questions</a>
+            <a href="{{ url_for('teacher_quiz_analytics', quiz_id=quiz.id) }}" class="btn btn-secondary btn-sm" style="margin-left: 0.5rem;">View Scores</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state glass-panel fade-in-up delay-2">
+        <p>You haven't created any quizzes yet.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

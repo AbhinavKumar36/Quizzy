@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A premium online quiz platform to test your knowledge.">
+    <title>{% block title %}Online Quiz Platform{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/icon.png') }}" type="image/png">
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <nav class="glass-nav">
+        <div class="nav-content">
+            <a href="{{ url_for('index') }}" class="logo">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'" alt="Quizzy Logo" style="height: 40px; margin-right: 8px;">
+                <span style="display:none; color: var(--primary); font-weight: 800; font-size: 1.5rem;">✨ Quizzy</span>
+            </a>
+            <div class="nav-links" style="display: flex; align-items: center; gap: 1rem;">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.role == 'teacher' %}
+                    <a href="{{ url_for('teacher_dashboard') }}" class="nav-link">Teacher Portal</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="nav-link">Logout ({{ current_user.username }})</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for message in messages %}
+                <div class="flash-message glass-panel">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

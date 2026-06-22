@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Quiz | Quizzy{% endblock %}
+
+{% block content %}
+<div class="teacher-header fade-in-up">
+    <h1>Create a New Quiz</h1>
+    <p>Define the title and description for your new quiz.</p>
+</div>
+
+<form action="{{ url_for('teacher_create_quiz') }}" method="POST" class="teacher-form glass-panel fade-in-up delay-1">
+    <div class="form-group">
+        <label for="title">Quiz Title</label>
+        <input type="text" id="title" name="title" class="glass-input" required placeholder="e.g. Advanced Physics">
+    </div>
+
+    <div class="form-group mt-1">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" class="glass-input" rows="3" placeholder="Briefly describe what this quiz covers..."></textarea>
+    </div>
+
+    <div class="form-group mt-1">
+        <label for="time_limit">Time Limit (Minutes)</label>
+        <input type="number" id="time_limit" name="time_limit" class="glass-input" value="0" min="0" placeholder="0 for no limit">
+    </div>
+
+    <div class="form-actions mt-2">
+        <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-accent">Create & Add Questions</button>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Register Student | Quizzy{% endblock %}
+
+{% block content %}
+<div class="teacher-header fade-in-up">
+    <div class="breadcrumb">
+        <a href="{{ url_for('teacher_dashboard') }}">Dashboard</a> &gt; Register Student
+    </div>
+    <h1>Register New Student</h1>
+    <p>Create an account for a student so they can access quizzes.</p>
+</div>
+
+<form action="{{ url_for('teacher_register_student') }}" method="POST" class="teacher-form glass-panel fade-in-up delay-1">
+    <div class="form-group">
+        <label for="reg_no">Registration No (Username)</label>
+        <input type="text" id="reg_no" name="reg_no" class="glass-input" required placeholder="e.g. S2024005">
+    </div>
+
+    <div class="form-group mt-1">
+        <label for="dob">Date of Birth (Password)</label>
+        <input type="text" id="dob" name="dob" class="glass-input" required placeholder="DDMMYYYY (e.g. 15082005)">
+    </div>
+
+    <div class="form-actions mt-2">
+        <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-accent">Register Student</button>
+    </div>
+</form>
+{% endblock %}

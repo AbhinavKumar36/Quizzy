@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Results | Quizzy{% endblock %}
+
+{% block content %}
+<div class="results-container fade-in-up">
+    <div class="score-card glass-panel">
+        <h2>Quiz Complete!</h2>
+        <p class="score-username">{{ score.user.username }}</p>
+        
+        <div class="score-circle">
+            <div class="score-text">
+                <span class="number">{{ score.score }}</span>
+                <span class="divider">/</span>
+                <span class="total">{{ score.total_questions }}</span>
+            </div>
+        </div>
+        
+        {% set percentage = (score.score / score.total_questions * 100) | round %}
+        <p class="percentage">{{ percentage }}% Correct</p>
+        
+        <div class="action-buttons">
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Quizzes</a>
+            <a href="{{ url_for('take_quiz', quiz_id=quiz.id) }}" class="btn btn-primary">Try Again</a>
+        </div>
+    </div>
+
+    <div class="leaderboard glass-panel fade-in-up delay-1">
+        <h3>Top Scores for {{ quiz.title }}</h3>
+        <ul class="leaderboard-list">
+            {% for top_score in top_scores %}
+            <li class="leaderboard-item {% if top_score.id == score.id %}highlight-current{% endif %}">
+                <span class="rank">#{{ loop.index }}</span>
+                <span class="lb-name">{{ top_score.user.username }}</span>
+                <span class="lb-score">{{ top_score.score }}/{{ top_score.total_questions }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="detailed-review fade-in-up delay-2 mt-2">
+    <h3>Detailed Review</h3>
+    <div class="questions-list" style="max-height: none;">
+        {% for ans in student_answers %}
+        <div class="question-preview glass-panel {% if ans.is_correct %}correct-ans{% else %}wrong-ans{% endif %}" style="margin-bottom: 1rem; border-left: 4px solid {% if ans.is_correct %}var(--success){% else %}var(--error){% endif %};">
+            <p class="q-text"><strong>Q{{ loop.index }}:</strong> {{ ans.question.text }}</p>
+            <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Your Answer: <strong>{{ ans.selected_option|default('Skipped', true) }}</strong></p>
+            {% if not ans.is_correct %}
+            <p class="q-answer">Correct Answer: <strong>{{ ans.question.correct_option }}</strong></p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

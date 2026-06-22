@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | Quizzy{% endblock %}
+
+{% block content %}
+<div class="teacher-header fade-in-up" style="text-align: center;">
+    <h1>Welcome to Quizzy</h1>
+    <p>Please select your role and login to continue.</p>
+</div>
+
+<div class="login-container glass-panel fade-in-up delay-1" style="max-width: 400px; margin: 0 auto;">
+    
+    <div class="role-tabs">
+        <button type="button" class="tab-btn active" id="tab-student" onclick="setRole('student')">Student</button>
+        <button type="button" class="tab-btn" id="tab-teacher" onclick="setRole('teacher')">Teacher</button>
+    </div>
+
+    <form action="{{ url_for('login') }}" method="POST" class="teacher-form" style="margin-top: 1.5rem;">
+        <input type="hidden" name="role" id="roleInput" value="student">
+        
+        <div class="form-group">
+            <label id="usernameLabel" for="username">Registration No</label>
+            <input type="text" id="username" name="username" class="glass-input" required placeholder="e.g. S2024001">
+        </div>
+
+        <div class="form-group mt-1">
+            <label id="passwordLabel" for="password">Password (DOB)</label>
+            <input type="password" id="password" name="password" class="glass-input" required placeholder="e.g. 01012005">
+        </div>
+
+        <div class="form-actions mt-2" style="justify-content: center;">
+            <button type="submit" class="btn btn-accent btn-large" style="width: 100%;">Login</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function setRole(role) {
+        // Update hidden input
+        document.getElementById('roleInput').value = role;
+        
+        // Update tab styles
+        document.getElementById('tab-student').classList.remove('active');
+        document.getElementById('tab-teacher').classList.remove('active');
+        document.getElementById(`tab-${role}`).classList.add('active');
+        
+        // Update labels and placeholders dynamically
+        const usernameLabel = document.getElementById('usernameLabel');
+        const usernameInput = document.getElementById('username');
+        const passwordLabel = document.getElementById('passwordLabel');
+        const passwordInput = document.getElementById('password');
+        
+        if (role === 'student') {
+            usernameLabel.innerText = 'Registration No';
+            usernameInput.placeholder = 'e.g. S2024001';
+            passwordLabel.innerText = 'Password (DOB)';
+            passwordInput.placeholder = 'e.g. 01012005';
+        } else {
+            usernameLabel.innerText = 'Teacher ID';
+            usernameInput.placeholder = 'e.g. T101';
+            passwordLabel.innerText = 'Password';
+            passwordInput.placeholder = 'Your secure password';
+        }
+    }
+</script>
+{% endblock %}

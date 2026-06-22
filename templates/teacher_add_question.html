@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Questions | Quizzy{% endblock %}
+
+{% block content %}
+<div class="teacher-header fade-in-up">
+    <div class="breadcrumb">
+        <a href="{{ url_for('teacher_dashboard') }}">Dashboard</a> &gt; {{ quiz.title }}
+    </div>
+    <h1>Add Questions</h1>
+    <p>Add new multiple-choice questions to <strong>{{ quiz.title }}</strong>.</p>
+</div>
+
+<div class="split-layout fade-in-up delay-1">
+    <div class="form-side">
+        <form action="{{ url_for('teacher_add_question', quiz_id=quiz.id) }}" method="POST" class="teacher-form glass-panel">
+            <h3>New Question</h3>
+            <div class="form-group mt-1">
+                <label for="text">Question Text</label>
+                <textarea id="text" name="text" class="glass-input" rows="2" required placeholder="What is the..."></textarea>
+            </div>
+
+            <div class="options-inputs mt-1">
+                <div class="form-group-inline">
+                    <label>A</label>
+                    <input type="text" name="option_a" class="glass-input" required>
+                </div>
+                <div class="form-group-inline">
+                    <label>B</label>
+                    <input type="text" name="option_b" class="glass-input" required>
+                </div>
+                <div class="form-group-inline">
+                    <label>C</label>
+                    <input type="text" name="option_c" class="glass-input" required>
+                </div>
+                <div class="form-group-inline">
+                    <label>D</label>
+                    <input type="text" name="option_d" class="glass-input" required>
+                </div>
+            </div>
+
+            <div class="form-group mt-1">
+                <label for="question_type">Question Type</label>
+                <select id="question_type" name="is_multiple_choice" class="glass-input" onchange="toggleOptionType(this)">
+                    <option value="0">Single Choice</option>
+                    <option value="1">Multiple Answers</option>
+                </select>
+            </div>
+
+            <div class="form-group mt-1">
+                <label>Select Correct Option(s)</label>
+                <div class="options-inputs" style="margin-top: 0.5rem;" id="correct_options_container">
+                    <label style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 8px; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: white;"><input type="radio" name="correct_option" value="A" required> A</label>
+                    <label style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 8px; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: white;"><input type="radio" name="correct_option" value="B" required> B</label>
+                    <label style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 8px; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: white;"><input type="radio" name="correct_option" value="C" required> C</label>
+                    <label style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 8px; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: white;"><input type="radio" name="correct_option" value="D" required> D</label>
+                </div>
+            </div>
+
+            <script>
+            function toggleOptionType(select) {
+                const container = document.getElementById('correct_options_container');
+                const inputs = container.querySelectorAll('input');
+                const isMulti = select.value === '1';
+                
+                inputs.forEach(input => {
+                    input.type = isMulti ? 'checkbox' : 'radio';
+                    input.checked = false;
+                    if (isMulti) {
+                        input.removeAttribute('required');
+                    } else {
+                        input.setAttribute('required', 'required');
+                    }
+                });
+            }
+            </script>
+
+            <div class="form-actions mt-2">
+                <button type="submit" class="btn btn-primary btn-large">Add Question</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="list-side">
+        <h3>Existing Questions ({{ existing_questions|length }})</h3>
+        <div class="questions-list">
+            {% for q in existing_questions %}
+            <div class="question-preview glass-panel" style="position: relative;">
+                <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.5rem;">
+                    <a href="{{ url_for('teacher_edit_question', question_id=q.id) }}" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Edit</a>
+                    <form action="{{ url_for('teacher_delete_question', question_id=q.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-accent" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: var(--error);" onclick="return confirm('Are you sure you want to delete this question?');">Delete</button>
+                    </form>
+                </div>
+                <p class="q-text"><strong>Q{{ loop.index }}:</strong> {{ q.text }}</p>
+                <ul style="list-style: none; margin-left: 1rem; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                    <li>A) {{ q.option_a }}</li>
+                    <li>B) {{ q.option_b }}</li>
+                    <li>C) {{ q.option_c }}</li>
+                    <li>D) {{ q.option_d }}</li>
+                </ul>
+                <p class="q-answer">Correct Answer: <strong>{{ q.correct_option }}</strong></p>
+            </div>
+            {% else %}
+            <p class="text-muted">No questions added yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

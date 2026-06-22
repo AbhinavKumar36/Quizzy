@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ quiz.title }} | Quizzy{% endblock %}
+
+{% block content %}
+<div class="quiz-header fade-in-up">
+    <h1>{{ quiz.title }}</h1>
+    <p>{{ quiz.description }}</p>
+    {% if quiz.time_limit > 0 %}
+    <div class="timer-badge glass-panel" id="timerCard" data-time="{{ quiz.time_limit * 60 }}">
+        <span style="font-size: 1.5rem; font-weight: bold; color: var(--accent);">Time Remaining: <span id="timeDisplay">--:--</span></span>
+    </div>
+    {% endif %}
+</div>
+
+<form action="{{ url_for('submit_quiz', quiz_id=quiz.id) }}" method="POST" class="quiz-form fade-in-up delay-1" id="quizForm">
+    <div class="questions-container">
+        {% for question in questions %}
+        <div class="question-card glass-panel fade-in-up delay-{{ loop.index + 1 }}">
+            <h3><span class="q-num">{{ loop.index }}.</span> {{ question.text }}</h3>
+            
+            <div class="options-grid">
+                {% set input_type = 'checkbox' if question.is_multiple_choice else 'radio' %}
+                {% set req_attr = '' if question.is_multiple_choice else 'required' %}
+                <label class="option-label">
+                    <input type="{{ input_type }}" name="q_{{ question.id }}" value="A" {{ req_attr }}>
+                    <span class="custom-radio {% if question.is_multiple_choice %}custom-checkbox{% endif %}"></span>
+                    <span class="option-text">{{ question.option_a }}</span>
+                </label>
+                <label class="option-label">
+                    <input type="{{ input_type }}" name="q_{{ question.id }}" value="B" {{ req_attr }}>
+                    <span class="custom-radio {% if question.is_multiple_choice %}custom-checkbox{% endif %}"></span>
+                    <span class="option-text">{{ question.option_b }}</span>
+                </label>
+                <label class="option-label">
+                    <input type="{{ input_type }}" name="q_{{ question.id }}" value="C" {{ req_attr }}>
+                    <span class="custom-radio {% if question.is_multiple_choice %}custom-checkbox{% endif %}"></span>
+                    <span class="option-text">{{ question.option_c }}</span>
+                </label>
+                <label class="option-label">
+                    <input type="{{ input_type }}" name="q_{{ question.id }}" value="D" {{ req_attr }}>
+                    <span class="custom-radio {% if question.is_multiple_choice %}custom-checkbox{% endif %}"></span>
+                    <span class="option-text">{{ question.option_d }}</span>
+                </label>
+            </div>
+            {% if question.is_multiple_choice %}
+            <p style="font-size: 0.8rem; color: var(--accent); margin-top: 0.5rem; margin-left: 1rem;">* Select all correct options.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="submit-container fade-in-up delay-6">
+        <button type="submit" class="btn btn-accent btn-large" id="submitBtn">Submit Answers</button>
+    </div>
+</form>
+{% endblock %}

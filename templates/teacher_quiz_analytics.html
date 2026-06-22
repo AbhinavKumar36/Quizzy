@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics - {{ quiz.title }} | Quizzy{% endblock %}
+
+{% block content %}
+<div class="teacher-header fade-in-up">
+    <div class="breadcrumb">
+        <a href="{{ url_for('teacher_dashboard') }}">Dashboard</a> &gt; {{ quiz.title }} Analytics
+    </div>
+    <h1>Analytics: {{ quiz.title }}</h1>
+    <p>View detailed performance metrics and individual student scores.</p>
+</div>
+
+<div class="analytics-overview fade-in-up delay-1" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div class="stat-card glass-panel" style="text-align: center; padding: 1.5rem;">
+        <h3 style="color: var(--text-muted); font-size: 1rem; text-transform: uppercase;">Total Attempts</h3>
+        <p style="font-size: 3rem; font-weight: 800; color: var(--primary);">{{ total_attempts }}</p>
+    </div>
+    <div class="stat-card glass-panel" style="text-align: center; padding: 1.5rem;">
+        <h3 style="color: var(--text-muted); font-size: 1rem; text-transform: uppercase;">Average Score</h3>
+        <p style="font-size: 3rem; font-weight: 800; color: var(--accent);">{{ "%.1f"|format(avg_score) }}</p>
+        {% if quiz.questions|length > 0 %}
+        <p style="color: var(--text-muted);">out of {{ quiz.questions|length }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="glass-panel fade-in-up delay-2">
+    <h3 style="margin-bottom: 1rem;">Student Scores</h3>
+    {% if results %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--glass-border); color: var(--text-muted);">
+                    <th style="padding: 1rem; font-weight: 600;">Registration No</th>
+                    <th style="padding: 1rem; font-weight: 600;">Score</th>
+                    <th style="padding: 1rem; font-weight: 600;">Percentage</th>
+                    <th style="padding: 1rem; font-weight: 600;">Date Taken</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score, student in results %}
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 1rem;">{{ student.username }}</td>
+                    <td style="padding: 1rem; font-weight: bold; color: var(--primary);">{{ score.score }} / {{ score.total_questions }}</td>
+                    <td style="padding: 1rem;">
+                        {% if score.total_questions > 0 %}
+                            {{ "%.0f"|format((score.score / score.total_questions) * 100) }}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </td>
+                    <td style="padding: 1rem; color: var(--text-muted); font-size: 0.9rem;">{{ score.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted">No students have taken this quiz yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
